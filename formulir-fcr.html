@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulir Call Report (FCR)</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h2 { text-align: center; }
+    fieldset { margin-bottom: 20px; border: 1px solid #aaa; padding: 15px; }
+    legend { font-weight: bold; }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input[type="text"], textarea {
+      width: 100%; padding: 8px; margin-top: 5px;
+      box-sizing: border-box;
+    }
+    table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+    td, th {
+      padding: 10px; border: 1px solid #aaa; text-align: center;
+    }
+    button { margin-top: 20px; padding: 10px 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+
+  <div id="form-container">
+    <h2>FORMULIR CALL REPORT (FCR)</h2>
+
+    <form id="fcr-form">
+      <fieldset>
+        <legend>A. NASABAH</legend>
+        <label>Nama Debitur:</label>
+        <input type="text" name="nama_debitur">
+        <label>Kolektibilitas:</label>
+        <input type="text" name="kolektibilitas">
+        <label>Pejabat Yang Di Call/Kontak:</label>
+        <input type="text" name="pejabat_kontak">
+      </fieldset>
+
+      <fieldset>
+        <legend>B. PELAKSANAAN CALL</legend>
+        <label>1. Tanggal Call/Contact:</label>
+        <label>a. Yang Lalu:</label>
+        <input type="text" name="tgl_lalu">
+        <label>b. Saat Ini:</label>
+        <input type="text" name="tgl_saat_ini">
+        <label>c. Berikutnya:</label>
+        <input type="text" name="tgl_berikutnya">
+
+        <label>2. Tempat Call/Contact:</label>
+        <input type="text" name="tempat_call">
+
+        <label>3. Sarana Call/Contact:</label>
+        <input type="text" name="sarana_call">
+
+        <label>4. Tujuan Call/Contact:</label>
+        <textarea name="tujuan_call" rows="3"></textarea>
+
+        <label>5. Hasil Call/Contact:</label>
+        <textarea name="hasil_call" rows="3"></textarea>
+      </fieldset>
+
+      <fieldset>
+        <legend>C. TINDAK LANJUT HASIL CALL/CONTACT</legend>
+        <p>Pelaksanaan monitoring berkesinambungan agar tetap bertahan di kolektibilitas 2 / menjadi lancar</p>
+        <table>
+          <tr>
+            <th>DEBITUR</th>
+            <th>STAF RELASI DEBITUR</th>
+            <th>PENDAMPING</th>
+            <th>MENGETAHUI<br>KEPALA BAGIAN PEMASARAN</th>
+          </tr>
+          <tr>
+            <td><input type="text" name="ttd_debitur"></td>
+            <td><input type="text" name="ttd_staf_relasi"></td>
+            <td><input type="text" name="ttd_pendamping"></td>
+            <td><input type="text" name="ttd_kabagm"></td>
+          </tr>
+        </table>
+      </fieldset>
+    </form>
+  </div>
+
+  <button onclick="downloadPDF()">Cetak ke PDF</button>
+
+  <script>
+    async function downloadPDF() {
+      const form = document.getElementById("form-container");
+      const canvas = await html2canvas(form, { scale: 2 });
+      const imgData = canvas.toDataURL("image/png");
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF("p", "mm", "a4");
+
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save("Formulir_Call_Report.pdf");
+    }
+  </script>
+
+</body>
+</html>
